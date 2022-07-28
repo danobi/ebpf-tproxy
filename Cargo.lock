@@ -544,6 +544,7 @@ dependencies = [
  "ctrlc",
  "libbpf-cargo",
  "libbpf-rs",
+ "nix",
 ]
 
 [[package]]
