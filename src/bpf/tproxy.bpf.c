@@ -64,6 +64,10 @@ handle_tcp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple)
 	if ((void *)tuple + tuple_len > (void *)(long)skb->data_end)
 		return TC_ACT_SHOT;
 
+        /* Only proxy packets destined for the target port */
+	if (tuple->ipv4.dport != target_port)
+		return TC_ACT_OK;
+
         /* Reuse existing connection if it exists */
 	sk = bpf_skc_lookup_tcp(skb, tuple, tuple_len, BPF_F_CURRENT_NETNS, 0);
 	if (sk) {
@@ -71,10 +75,6 @@ handle_tcp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple)
 			goto assign;
 		bpf_sk_release(sk);
 	}
-
-        /* Only proxy packets destined for the target port */
-	if (tuple->ipv4.dport != target_port)
-		return TC_ACT_OK;
 
         /* Lookup port server is listening on */
         server.ipv4.saddr = tuple->ipv4.saddr;
