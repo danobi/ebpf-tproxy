@@ -58,7 +58,6 @@ handle_tcp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple)
 	struct bpf_sock *sk;
 	const int zero = 0;
 	size_t tuple_len;
-	__be16 dport;
 	int ret;
 
         tuple_len = sizeof(tuple->ipv4);
